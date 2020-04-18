@@ -1,8 +1,8 @@
 \name{testunknown}
 \alias{testunknown}
-\title{Process the Sample Vectors Whose Distribution is to be Tested}
-\description{Create positive definite matrices without nuisance parameters. 
-    Tabulate distribution of matrices. Calculate goodness of fit to uniform}
+\title{Test the Sample Vectors for Normality Distribution}
+\description{Transform to positive definite matrices without nuisance parameters. 
+    Tabulate distribution of matrices. Calculate goodness of fit to uniform.}
 \usage{testunknown(x, pvector, k, diagnose.s = FALSE, diagnose = FALSE, 
     verbose = TRUE) 
 }
@@ -21,7 +21,9 @@
 }  
 \references{
 Csorgo, M and Seshadri, V (1970). On the problem of replacing composite hypotheses by equivalent simple ones, Rev. Int. Statist. Instit., 38, 351-368
+
 Csorgo,M and Seshadri,V (1971). Characterizing the Gaussian and exponential laws by mappings onto the unit interval, Z. Wahrscheinlickhkeitstheorie verw. Geb., 18, 333-339.
+
 Fairweather, WR (1973). A test for multivariate normality based on a characterization. Dissertation submitted in partial fulfillment of the requirements for the Doctor of Philosophy, University of Washington, Seattle WA.
 }
 \author{William R. Fairweather}
