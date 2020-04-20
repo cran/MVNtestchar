@@ -1,3 +1,7 @@
+# MVNtestchar 1.0.2
+
+* Loaded correct README file
+
 # MVNtestchar 1.0.1
 
 * Cleaned up DESCRIPTION appearance

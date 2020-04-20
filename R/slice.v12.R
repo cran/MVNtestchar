@@ -1,3 +1,4 @@
+#' @export
 slice.v12 <-
 function(level3 =.3, theta=30, phi=10, inc=25, lseq=100, static=FALSE, ticktype="detailed", diagnose=FALSE, verbose=TRUE)
 {

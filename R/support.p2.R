@@ -1,3 +1,4 @@
+#' @export
 support.p2 <-
 function(theta=110, phi=10, lseq=150, inc=25, static=FALSE, ticktype="detailed", diagnose=FALSE, verbose=TRUE)
 {

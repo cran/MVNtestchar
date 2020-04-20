@@ -1,3 +1,4 @@
+#' @export
 maxv12 <-
 function(theta=30, phi=30, inc=25, lseq=200, static=FALSE, ticktype="detailed", diagnose=FALSE, verbose=TRUE)
 {
@@ -6,7 +7,7 @@ function(theta=30, phi=30, inc=25, lseq=200, static=FALSE, ticktype="detailed", 
 	# VALUE	Rotatable plot of surface of possible values of off-diagonal variable in positive definite 2 x 2 matrix. 
 	#			Output includes last values of plot rotation.
 	#
-	# INPUT	theta, phi	Angles of rotation of plot
+	# INPUT	theta,  phi	Angles of rotation of plot
 	#		inc		Increment of angle rotation for view
 	#		lseq		Number of points along V1 and V2
 	#		static	Logical. TRUE suppresses rotation

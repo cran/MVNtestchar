@@ -1,7 +1,8 @@
 \name{maxv12}
 \alias{maxv12}
 \title{Rotatable Plot of Surface of Possible Maximum Values of Off-diagonal Variable}
-\description{Rotatable plot of surface of possible maximum values of off-diagonal variable v12 in positive definite 2 x 2 matrix as a function of the diagonal variables v1 and v2.}
+\description{Rotatable plot of surface of possible maximum values of off-diagonal variable v12 in positive definite 
+    2 x 2 matrix as a function of the diagonal variables v1 and v2.}
 \usage{
 maxv12(theta = 30, phi = 30, inc = 25, lseq = 200, static=FALSE, 
     ticktype="detailed", diagnose = FALSE, verbose = TRUE)

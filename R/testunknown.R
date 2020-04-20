@@ -1,3 +1,4 @@
+#' @export
 testunknown <-
 function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 {
