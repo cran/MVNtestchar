@@ -3,7 +3,7 @@
 \docType{data}
 \title{A Sample From an Unknown Bivariate Distribution 
 }
-\description{A 3600 x 2 x 1 array generated from 7200 modified Bernoulli(0,1) variables. Variables were modified by adding a normal random variate with very small variance to each Bernoulli variable in order to avoid creating degenerate matrices during operation of the test function. 
+\description{A 3600 x 2 x 1 array generated from 7200 modified Bernoulli(0,1) variables. 
 }
 \usage{data("unknown.Bp2")}
 \format{

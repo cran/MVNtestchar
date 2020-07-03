@@ -1,14 +1,21 @@
-# MVNtestchar 1.0.2
+MVNtestchar 1.1.0
+=================
 
-* Loaded correct README file
+-   Added Appendix to vignette
 
-# MVNtestchar 1.0.1
+MVNtestchar 1.0.2
+=================
 
-* Cleaned up DESCRIPTION appearance
-* Added a vignette describing the theory and implementation of the test
+-   Loaded correct README file
 
+MVNtestchar 1.0.1
+=================
 
+-   Cleaned up DESCRIPTION appearance
 
-# MVNtestchar 1.0.0
+-   Added a vignette describing the theory and implementation of the test
 
-* First version submitted to CRAN
+MVNtestchar 1.0.0
+=================
+
+-   First version submitted to CRAN

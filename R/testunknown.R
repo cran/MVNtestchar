@@ -1,4 +1,3 @@
-#' @export
 testunknown <-
 function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 {
@@ -7,13 +6,13 @@ function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 	# VALUE		Create matrices without nuisance parameters. Tabulate distribution.
 	#			Output is list: data.frame of mobs simulations with r observations on each, goodness of fit chi square test and call to this function.
 	#
-	# INPUT		x		Name of n x p matrix or array with dimensions (x,y,z) = (n=4r(p+1),p, mobs). 
-	#		pvector		Dimensionality of random vector
+	# INPUT	x		Name of n x p matrix or array with dimensions (x,y,z) = (n=4r(p+1),p, mobs). 
+	#		pvector	Dimensionality of random vector
 	#		k		Number of cuts in (0,1) for diagonal elements of each matrix.  Program uses 2k cuts for offdiagonal elements.
 	#
-	#		diagnose.s	Logical. TRUE causes printing of diagnostic terms in called function(s), primarily exploreM()
-	#		diagnose	Logical. TRUE causes printing of diagnostic content of main function
-	#		verbose		Logical. TRUE causes printing of program ID before and after running.
+	#		diagnose.s	Logical T causes printing of diagnostic terms in called function(s), primarily exploreM()
+	#		diagnose	Logical. T causes printing of diagnostic content of main function
+	#		verbose	Logical. T causes printing of program ID before and after running.
 	#
 	MC <- match.call()
 	if(verbose) {
@@ -35,7 +34,7 @@ function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 	# n x n identity matrix #
 	#########################	
 	my.identity <- function(n){
-		matrix(rep(c(1,rep(0,n)),times=n)[1:(n*n)],nrow=n,ncol=n,byrow=TRUE)
+		matrix(rep(c(1,rep(0,n)),times=n)[1:(n*n)],nrow=n,ncol=n,byrow=T)
 	}
 	######################################################
 	# Define the support function formS that removes the # 
@@ -136,11 +135,7 @@ function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 				Hmisc::prn(c2)
 			}
 		n <- 4*r*(p+1)
-		nelim <- dimx[1] - n
-		if(nelim > 0){
-			elim <- -1 * sample.int(dimx[1], size = nelim, replace=FALSE)
-			x <- x[elim,]		# abbreviated sample, with exactly n = 4r(p+1) rows
-		}
+		x <-  x[1:n,]# abbreviated sample, with exactly n = 4r(p+1) rows
 			if(diagnose){
 				print("After eliminating excess rows in x",quote=F)
 				Hmisc::prn(dimx)
@@ -155,7 +150,7 @@ function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 	#######################################################################################
 	# Make a list with r elements, each element of which is a data frame with 4(p+1) rows #
 	#######################################################################################
-		listx <- vector("list",r)
+		listx <- list(1:r)
 		listrows <- 4*(p+1)
 		for(i in 1:r){
 			if(diagnose){
@@ -232,7 +227,7 @@ function(x, pvector, k, diagnose.s=FALSE, diagnose=FALSE, verbose=TRUE)
 		uu <- paste("The input x is supposed to have", pvector, "columns")
 		stop(uu)
 	}
-	r <- floor(n/(4*(p+1)))
+	r <- n/(4*(p+1))
 	print(paste("The source file dimensions (n, p, mobs) are (", n,", ", p,", ", mobs, ")",sep="" ),quote=F)
 	print(paste("resulting in r =",r,"adjusted observations after the mean and covariance matrix are removed."),quote=F)
 			if(diagnose){

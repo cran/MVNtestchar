@@ -3,7 +3,7 @@
 \docType{data}
 \title{A Sample From an Unknown Four-variate Distribution 
 }
-\description{A 6000 x 4 x 1 array generated from 24,000 Bernoulli(0,1) variables. Variables were modified by adding a normal random variate with very small variance to each Bernoulli variable in order to avoid creating degenerate matrices during operation of the test function.
+\description{A 6000 x 4 matrix generated from 24,000 Bernoulli(0,1) variables
 }
 \usage{data("unknown.Bp4")}
 \format{
