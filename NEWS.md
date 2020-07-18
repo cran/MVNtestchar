@@ -1,4 +1,4 @@
-MVNtestchar 1.1.0
+MVNtestchar 1.1.2
 =================
 
 -   Added Appendix to vignette

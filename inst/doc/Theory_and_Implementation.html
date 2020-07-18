@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="William R. Fairweather" />
+
+
+<title>Theory and Implementation of the Test</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Theory and Implementation of the Test</h1>
+<h4 class="author">William R. Fairweather</h4>
+
+
+
+<div id="underlying-theory-of-the-test" class="section level1">
+<h1>Underlying Theory of the Test</h1>
+<div id="sources" class="section level2">
+<h2>Sources</h2>
+<p>This test of multivariate normality is based on the univariate work of Csörgö and Seshadri (1970, 1971) and on my doctoral dissertation (Fairweather 1973). As indicated in the titles of these articles, the test is based on a characterization; that is, it is based on characteristics of the normal distribution that are unique to it among all (nondegenerate) multivariate distributions. The MVNtestchar package implements this test.</p>
+</div>
+</div>
+<div id="transformations-and-the-characterization" class="section level1">
+<h1>Transformations and the Characterization</h1>
+<p>Consider a set of p x 1 random vectors of full rank Xi, i = 1, . . ., 4(p+1). Let Yi = X2i – X2i-1, i = 1, . . ., 2(p+1).</p>
+<p>The Yi have a distribution that is centered at 0, so all of the odd moments of the Yi are zero regardless of the underlying distribution of the Xi. Now, define</p>
+<p><span class="math display">\[
+W_{1} = \sum_{i = 1}^{p + 1}{Y_{i}{Y&#39;}_{i}}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[W_{2} = \sum_{i = p + 2}^{2(p + 1)}{Y_{i}{Y&#39;}_{i}}\]</span>,</p>
+<p>where Y’i is the transpose of Yi. The Wi are then independently distributed, symmetric matrices of rank p.</p>
+<p>Let T = W1 + W2 and let S = T-1/2 W1 T-1/2 . S is a positive definite (symmetric) matrix of rank p regardless of the underlying distribution of the Xi.</p>
+<p>It is shown in the Appendix that S is distributed uniformly on its support region <strong>if and only if</strong> the Xi are multivariate normal. It is this characteristic that underlies the test.</p>
+<div id="the-support-region-for-s" class="section level2">
+<h2>The support region for S</h2>
+<p>The p x p symmetric matrix S is equivalent to a set of p(p+1)/2 random variables V1, V2, … , Vp, V12, V13, .., V1p, …, Vp-1,p. This is easily seen if we lay out the Vij in the matrix format, showing only the upper triangle:</p>
+<p><span class="math display">\[
+\begin{matrix}
+\begin{matrix}
+V_{1} &amp; V_{12} \\
+ &amp; V_{2} \\
+\end{matrix} &amp; \begin{matrix}
+V_{13} &amp; \begin{matrix}
+\cdots &amp; V_{1,p} \\
+\end{matrix} \\
+V_{23} &amp; \begin{matrix}
+\cdots &amp; V_{2,p} \\
+\end{matrix} \\
+\end{matrix} \\
+\begin{matrix}
+ &amp; \\
+ &amp; \\
+\end{matrix} &amp; \begin{matrix}
+\begin{matrix}
+V_{3} &amp; \cdots \\
+\end{matrix} &amp; V_{3,p} \\
+\begin{matrix}
+ &amp; \\
+\end{matrix} &amp; V_{p} \\
+\end{matrix} \\
+\end{matrix}
+\]</span></p>
+<p>V1 through Vp are the diagonal elements of the matrix and V12 … Vp-1,p are the off-diagonal elements.</p>
+<p>By construction, the diagonal elements of S all lie in the interval <span class="math display">\[\lbrack0,1\rbrack\]</span>. Because S is positive definite, the off-diagonal elements all lie in the interval <span class="math display">\[\lbrack-1,1\rbrack\]</span>. The support region of S is within the hyper-rectangle <span class="math display">\[R_{p} = {\lbrack 0,1\rbrack}^{p}{\lbrack -
+1,1\rbrack}^{m},\]</span> where m = p(p-1)/2.</p>
+<p>The support region is difficult to envision in higher dimensions. For p = 2, the matrix S has two diagonal elements and one off-diagonal element: V1, V2, and V12. The support region of S is, then, that part of the three-dimensional hyper-rectangle bounded by <span class="math display">\[R_{2} = {\lbrack 0,1\rbrack}^{2} \lbrack
+-1,1\rbrack\]</span> and that satisfies V1 V2 – V122 &gt; 0.</p>
+<p>By stepping |V12| up from 0 to 1.0, the following graph shows the support region (shaded) as a function of V1 and V2:</p>
+<p><img src="data:image/png;base64,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" width="100%" /></p>
+<p>The package contains four functions that produce rotatable graphs depicting this hyper-rectangle and the positive definite region within it. The function <em>support.p2( )</em> shows the entire positive definite region. The functions <em>slice.v1( )</em> and <em>slice.v12( )</em> show slices through the region for fixed values of V1 and V12, respectively. Finally, <em>maxv12( )</em> shows the maximum value of V12 as a function of V1 and V2.</p>
+<p>The latest values of the rotational parameters are output in list format upon exit from the graphics functions to facilitate return to that rotation, if desired. To capture these, assign the function to a new variable.</p>
+</div>
+</div>
+<div id="implementing-the-test" class="section level1">
+<h1>Implementing the Test</h1>
+<p>The function <em>testunknown(x, pvector, k)</em> implements the test of multivariate normality of the n x p matrix, x. x can be either a matrix or an array. The input parameters will be discussed more fully in the next paragraphs.</p>
+<p>The matrix x is assumed to be a sample of n observations on the unknown p-variate distribution. Here, n = 4r(p+1) for r a positive integer. The transformations involve exact numbers of random variables, and <em>testunknown( )</em> will discard observations at random to ensure that this condition holds.</p>
+<p><em>testunknown( )</em> divides the sample into r groups of 4(p+1) observations and performs the transformations described above on each of the r sets independently. This results in positive definite matrices S1, …, Sr distributed independently as described above regardless of the distribution of the Xi.</p>
+<p>S1, …, Sr are distributed uniformly on the positive definite subspace of the hyper-rectangle <span class="math display">\[R_{p} = {\lbrack 0,1\rbrack}^{p}{\lbrack - 1,1\rbrack}^{m}\]</span> if and only if x is a sample from a multivariate normal distribution. <em>testunknown( )</em> performs a chisquare goodness of fit test by filling this hyper-rectangle with mini-cubes and counting the number of Si in each mini-cube. As implied, the mini-cubes are hyper-cubical (equal length in every dimension).</p>
+<p>The input variable pvector is essentially a check to ensure that the matrix is oriented properly; it should equal the value of p taken from x directly. If this test fails, the function aborts. The parameter k defines the number of cuts to be made on each edge of the hyper-rectangle. The mini-cubes will then be of size 1/k x 1/k x … x 1/k. There are p(p+1)/2 terms in this set.</p>
+<p>It is possible to undertake various research projects with this test function, and an array with mobs = b layers is allowed in order to facilitate this possibility. We have in mind simulations with b repetitions. If x is an array with b layers, x should have dimension n x p x b.</p>
+<div id="relating-sample-size-to-the-size-of-mini-cubes" class="section level2">
+<h2>Relating Sample Size to the Size of Mini-cubes</h2>
+<p>Any goodness of fit test, univariate or multivariate, must consider the relationship of the sample size to the number of “bins” into which the support is subdivided. The sample size is always finite and the samples are continuous, so that creating too many bins will always result in exactly 1 observation per occupied bin. With too many bins, there can be no distinction between null and alternative distributions.</p>
+<p>In our case, the number of mini-cubes (“bins”) into which the hyper-cube is divided is N(k,p) = kp(2k)m,where m = p(p-1)/2. For p = 2, m = 1 and N(k,p) = 2k3. Similarly, N(k,3) = 8k6 and N(k,4) = 64k10 . Mini-cubes are entirely, partially, or not at all within the positive definite region of the hyper-rectangle. We can calculate analytically the fraction of the hyper-rectangle that is within the positive definite region only for p = 2. This fraction is 4/9. For p &gt; 2, the calculation appears to be intractable.</p>
+<p>The number of mini-cubes clearly grows rapidly with the dimension of the sample. However, the support of the Si is only a subset of the hyper-rectangle, namely the positive definite region. The following table shows the number of mini-cubes in the hyper-rectangle, N(k,p), the ratio of the positive definite region to the overall volume of the hyper-rectangle, and the approximate number of mini-cubes in the positive definite region, as a function of k and p ≤ 4.</p>
+<p><strong>Table 1. The number of mini-cubes, N(k,p) in the hyper-rectangle, as a function of the number of cuts, k and the dimensionality, p of the sample, and the number that represent positive definite matrices.</strong></p>
+<pre><code> --------------------------  --------------------------  --------------------------
+            p = 2                      p=3                         p=4
+     - ------ ----- -------    - ------- ----- -------      - -------- ----- -------  
+     k N(k,p) ratio pos def    k  N(k,p) ratio pos def      k  N(k,p)  ratio pos def   
+               (%)                        (%)                           (%)     
+
+     2     16  44.4       7    2     512  14.8      76      2    65536   0.6     344    
+     5    250  44.4     111    5  125000   7.2    8948      3    3.7e6   0.5   20410    
+    10   2000  44.4     889    6  373248   7.8   29213      4    6.7e7   0.5  335544
+    15   6750  44.4    3000    7  941192   7.8   73688      5    6.3e8   0.5   3.0e6
+    20  16000  44.4    7110    9   4.2e6   7.8  331619      6    3.9e9   0.5   2.0e7</code></pre>
+<p>N(k,p) is easily calculated in each case. For p=2, the calculated ratio was multiplied by the number of mini-cubes to get the approximate number of positive definite mini-cubes. For p &gt; 2, rows 1 through 4 of Table 1 were calculated as follows: The hyper-rectangle was filled with mini-cubes as described above. A mini-cube was defined to be within the positive definite region if a point very near the center of the mini-cube represented a positive definite matrix. The last row of the table is an extrapolation obtained by applying the asymptotic ratio to the calculated value of N(k,p).</p>
+<p>For each value of p the ratio of mini-cubes in the positive definite region to the overall number in the hyper-rectangle is fairly constant. For p &gt; 2, this ratio is a very small part of the overall volume of the hyper-rectangle. Nevertheless, Table 1 shows that a very large number of “bins” in the support region will result if k is set too large.</p>
+<p>In performing the characterization transformations, the number of vector samples is substantially reduced to form the positive definite matrices that are tested for uniformity of distribution. Table 1 refers to the number of bins into which the matrices Si will fall. 4(p+1) vectors Xi will result in a single matrix Si. This multiplier is 12 for p = 2, is 16 for p = 3, and is 20 for p = 4. Assuming that the expected number of Si in each bin should be 3 or 5, Table 2 gives the number of Xi that should be in the sample for each value of k.</p>
+<p><strong>Table 2. Relationship of sample size n to number of cuts k, as a function of the expected number E of positive definite matrices Si per mini-cube.</strong></p>
+<pre><code>             ---------------    --------------------    ---------------------
+                p = 2                  p = 3                 p = 4          
+             -    ----  ----     -    -----     ----     -    ----    ----
+             k     E=3   E=5     k      E=3      E=5     k     E=3     E=5
+
+```
+##                                                                             
+## 1            2    256    427     2     3648     6080     2    20640    34400
+## 2            5   4000   6666     5   429504   715840     3  1224600  2041000
+## 3           10  31997  53328     6  1402224  2337040     4 20132640 33554400
+## 4           15 107989 179982     7  3537024  5395040     5 1.87e+08 3.12e+08
+## 5           20 255974 426624     9 15917712 26529520     6 1.19e+09 1.98e+09
+```</code></pre>
+<p>From Table 2, we conclude that if we wish to test a trivariate sample for normality, and we have about 720,000 observations, we should set k to be no more than 5 to ensure that there are about 5 observations per mini-cube.</p>
+</div>
+</div>
+<div id="example-databases-included-in-mvntestchar-package" class="section level1">
+<h1>Example Databases Included in MVNtestchar Package</h1>
+<p>In order to gain experience with the functions, the package contains four sample databases:</p>
+<ul>
+<li><p>unknown.Np2</p></li>
+<li><p>unknown.Np4</p></li>
+<li><p>unknown.Bp2</p></li>
+<li><p>unknown.Bp4</p></li>
+</ul>
+<p>Here, bivariate vectors are symbolized by 2 and quadri-variate vectors are symbolized by 4. N symbolizes normal random vectors and B symbolizes modified Bernoulli random vectors. True Bernoulli random variables cause the test program to crash because of colinearity, so a normal variable with extremely small variance was added to make the Bernoulli vectors continuous random variables. unknown.Bp2 is a matrix; the others are arrays with a single layer.</p>
+<p><em>References</em></p>
+<p>Anderson, TW. (1958), An Introduction to Multivariate Statistical Analysis, John Wiley, New York.</p>
+<p>Cramér, H (1962). Random Variables and Probability Distributions, Cambridge University Press, London.</p>
+<p>Csörgö, M and Seshadri, V (1970). On the problem of replacing composite hypotheses by equivalent simple ones, <em>Rev. Int. Statist. Instit.</em>, <strong>38</strong>, 351-368</p>
+<p>Csörgö,M and Seshadri,V (1971). Characterizing the Gaussian and exponential laws by mappings onto the unit interval, <em>Z. Wahrscheinlickhkeitstheorie verw. Geb.</em>, <strong>18</strong>, 333-339.</p>
+<p>Deemer,WL and Olkin,I (1951). The Jacobians of certain matrix transformations useful in multivariate analysis, <em>Biometrika</em>, <strong>58</strong>, 345 367.</p>
+<p>Fairweather, WR (1973). A test for multivariate normality based on a characterization. Dissertation submitted in partial fulfillment of the requirements for the Doctor of Philosophy, University of Washington, Seattle WA.</p>
+<p><strong>APPENDIX</strong></p>
+<p>The two theorems proven in this section characterize the multivariate normal probability distribution in terms of the distribution of certain positive definite matrix statistics. We will employ the following notation, definitions and conventions:</p>
+<p>Capital letters will denote vectors or matrices, which should be clear by context or specific wording. A’ will denote the transpose of A. The determinant of a square matrix A will be denoted by |A| and its trace by tr A.</p>
+<p>As usual, “independent and identially distributed” will be abbreviated as iid; “positive definite” as pd ; “is distributed as” by the symbol ~ ; and “is proportional to” by the symbol <span class="math inline">\(\propto\)</span>.</p>
+<p>We write A &lt; B if A and B are symmetric matrices and B – A is positive definite.</p>
+<p>Define the functions</p>
+<p><span class="math display">\[
+\Gamma\left( z \right) = \int_{0}^{\infty}{t^{z - 1}\varepsilon^{- t}\text{dt}}
+\]</span></p>
+<p><span class="math display">\[
+\Gamma_{p}\left( \lambda \right) = \pi^{p(p - 1)/4}\prod_{j = 1}^{p}{\Gamma(\lambda - \frac{1}{2}}(j - 1))
+\]</span></p>
+<p><span class="math display">\[
+\beta_{k,p}^{*}\left( a_{1},\ \ldots,\ a_{k} \right) = \frac{\left\{ \prod_{j = 1}^{k}{\Gamma_{p}\left( a_{j} \right)} \right\}}{\Gamma_{p}\left( \sum_{j = 1}^{k}a_{j} \right)}
+\]</span></p>
+<p><span class="math display">\[
+\beta_{k,p} = \beta_{k,p}^{*}(\frac{1}{2}\left( p + 1 \right),\ \ldots,\frac{1}{2}(p + 1))
+\]</span></p>
+<p>for <span class="math inline">\(\lambda\)</span> and the aj &gt; (p-1)/2.</p>
+<p>For S p.d., define</p>
+<p><span class="math display">\[
+c_{p}^{*}\left( n,\Sigma \right) = 1/\left\{ 2^{np/2}\Gamma_{p}\left( \frac{n}{2} \right){|\Sigma|}^{n/2} \right\}
+\]</span></p>
+<p><span class="math display">\[
+c_{p}\left( \Sigma \right) = c_{p}^{*}(p + 1,\Sigma).
+\]</span></p>
+<p>The p-variate Normal distribution function with mean μ and covariance matrix Σ will be denoted by Np(μ,Σ). The Wishart distribution with parameters Σ, n, and p will be denoted by W(Σ,n,p). If n ≥ p, a matrix variable S ~ W(Σ,n,p) has the density</p>
+<p><span class="math display">\[
+c_{p}^{*}\left( n,\Sigma \right){|S|}^{(n - p - 1)/2}exp( - \frac{1}{2}\text{trS}\Sigma^{- 1}), 0 \&lt; S.
+\]</span></p>
+<p>We say that T is a matrix square root of U if TT’ = U. No further specification of T will be needed here.</p>
+<p>The distance d(A,B) between symmetric p x p matrices A = ((aij)) and B = ((bij)) is defined to be</p>
+<p><span class="math display">\[
+d\left( A,B \right) = \left\lbrack \sum_{i = 1}^{p}{\sum_{j = 1}^{p}\left( a_{\text{ij}} - b_{\text{ij}} \right)^{2}} \right\rbrack^{1/2}
+\]</span></p>
+<p>A function f of a symmetric p x p matrix is continuous at A if f is continuous at A in the metric d; f is continuous if it is continuous at every A. The function f is right continuous at A if for every ε &gt; 0, all B &gt; A for which d(A,B) &lt; δ(ε) satisfy |f(A) – f(B)| &lt; ε; f is right continuous if it is right continuous at every A.</p>
+<p>Define the set of functions</p>
+<p>Vp = {f: f defined on symmetric p x p matrices, f continuous at each A &gt; 0 and right continuous at 0}.</p>
+<p>Gk,p = {Si: Si is a p x p real, symmetric matrix, 0 &lt; S1 &lt; S2 &lt; … &lt; Sk-1 &lt; I}</p>
+<div id="theorem-1." class="section level3">
+<h3>Theorem 1.</h3>
+<p>Let Zi (1 ≤ i ≤ 2mk) be iid p-variate random vectors with mean μ and pd covariance matrix Σ . Define</p>
+<p><span class="math display">\[X_{i} = (Z_{2i-1} - Z_{2i})/ \sqrt{2}\]</span> for (1 ≤ i ≤ mk) and</p>
+<p><span class="math display">\[W_{j} = \sum_{i = \left( j - 1 \right)m + 1}^{\text{jm}}{X_{i}{X&#39;}_{i}}\]</span> for (1 ≤ j ≤ k).</p>
+<p>Then the Xi are iid Np(0,Σ) and the Wj are iid W(Σ,m,p) if and only if the Zi ~ Np(μ,Σ).</p>
+</div>
+<div id="proof." class="section level3">
+<h3>Proof.</h3>
+<p>The Xi are iid by construction; similarly, for the Wj. The stated moments of the Xi also follow irrespective of the distribution of the Zi.</p>
+<p>Sufficiency follows from the usual development of the Wishart distribution as given, for example, in Anderson (1958, Ch.7). We note that Wj does not necesarily have a density (i.e., may be degenerate) because the parameter m is not required here to be at least equal to p. The characteristic function of Wj does exist, however, in all cases.</p>
+<p>To show that the condition is also necessary define B to be a non-singular matrix such that for θ real symmetric B’θB = D diagonal and also<br />
+B’S-1B = I. (Such a matrix exists; see Anderson (1958, p.34).) Then B-1SB’-1 = I.</p>
+<p>Let Y = B-1X1. The characteristic function of W1 for θ real symmetric is</p>
+<p><span class="math display">\[
+\psi_{W_{1}}\left( \theta \right) = \psi_{\sum_{i = 1}^{m}{X_{i}{X&#39;}_{i}}}\left( \theta \right) = \left\lbrack \psi_{X_{i}{X&#39;}_{i}}\left( \theta \right) \right\rbrack^{m}
+\]</span></p>
+<p>because the Xi are iid. Now,</p>
+<p><span class="math display">\[
+\psi_{X_{i}{X&#39;}_{i}}\left( \theta \right) = \psi_{BYY&#39;B&#39;}\left( \theta \right)
+\]</span></p>
+<p><span class="math display">\[
+= E\ exp\left( i\ tr\ BYY&#39;B&#39;\theta \right)
+\]</span></p>
+<p><span class="math display">\[
+= E\ exp\left( i\ Y&#39;B&#39;\theta BY \right)
+\]</span></p>
+<p><span class="math display">\[
+= E\ exp\left( i\ Y&#39;DY \right)
+\]</span></p>
+<p><span class="math display">\[
+= E\ exp\left( \text{i\ }\sum_{j = 1}^{p}{d_{\text{jj}}Y_{j}^{2}} \right)
+\]</span></p>
+<p><span class="math display">\[
+= \psi_{S}\left( d \right)
+\]</span></p>
+<p>This last term is the characteristic function of the vector S’ =(Y12, …, Yp2), where d’ = (d11,…, dpp) because d may be any vector with real elements by choosing θ appropriately. It follows that</p>
+<p><span class="math display">\[
+\psi_{W_{1}}\left( \theta \right) = \left\lbrack \psi_{S}(d) \right\rbrack^{m}
+\]</span></p>
+<p>By assumption W1 ~ W(Σ,m,p); then for θ real symmetric (Anderson (1958, p.160)),</p>
+<p><span class="math display">\[
+\psi_{W_{1}}\left( \theta \right) = \frac{\left| \Sigma^{- 1} \right|^{m/2}}{\left| \Sigma^{- 1} - 2i\theta \right|^{m/2}}
+\]</span></p>
+<p><span class="math display">\[
+= \frac{\left( \left| B&#39; \right|\left| \Sigma^{- 1} \right|\left| B \right| \right)^{m/2}}{\left( \left| B&#39; \right|\left| \Sigma^{- 1} - 2i\theta \right|\left| B \right| \right)^{m/2}}
+\]</span></p>
+<p><span class="math display">\[
+= \left| I - 2iD \right|^{- m/2}
+\]</span></p>
+<p><span class="math display">\[
+= \left( \prod_{j = 1}^{p}\left( 1 - 2id_{\text{jj}} \right)^{- 1/2} \right)^{m}
+\]</span></p>
+<p>This shows the components Yj2 of S to be iid chi-square with 1 df. Write the j-th row of B-1 as bj-1; then Yj = bj-1X1. Because X1 has marginal symmetry about 0, Yj is symmetrically distributed about 0 (1 ≤ j ≤ p). By Lemma 3 of Csörgö and Seshadri (1971), Yj ~ N1(0,1). Thus, Y ~ Np(0,I) and X1 = BY ~ Np(0,BB’), or X1 ~ Np(0,S). The result follows by applying Cramér’s Theorem (Cramér, 1962, p. 112-113)) and the identity of distribution of the Zi.</p>
+</div>
+<div id="theorem-2." class="section level3">
+<h3>Theorem 2.</h3>
+<p>Let Wi (1 ≤ i ≤ k) be iid p x p pd random matrices with density f ε Vp. Define <span class="math display">\[U = \ \sum_{i = 1}^{p}W_{i}\]</span></p>
+<p>and let T be any matrix square root of U. Define Ui = T-1WiT’-1 and <span class="math display">\[S_{i} =
+\sum_{j = 1}^{p}U_{j}\]</span> (1 ≤ i ≤ k-1). Then (S1, …, Sk-1) is uniform over Gk,p and independent of U if and only if the Wi ~ W(Σ,p+1,p) for some Σ .</p>
+</div>
+<div id="proof.-1" class="section level3">
+<h3>Proof.</h3>
+<p>Let Wi ~ W(Σ,p+1,p) (1 ≤ i ≤ k), so that</p>
+<p><span class="math display">\[f\left( w_{i} \right) = c_{p}\left( \Sigma \right)\exp\left( -
+\frac{1}{2}\text{tr}w_{i}\Sigma^{- 1} \right)\]</span> for 0 &lt; wi .</p>
+<p>Then because the Jacobian is unity,</p>
+<p><span class="math display">\[
+f_{w_{1},\ldots,w_{k - 1},u}\left( w_{1},\ldots,u \right) = \left\lbrack c_{p}(\Sigma) \right\rbrack^{k}\exp\left( - \frac{1}{2}\text{tru}\Sigma^{- 1} \right)
+\]</span></p>
+<p>over <span class="math display">\[\left\{ 0 &lt; w_{i},\sum_{i = 1}^{k - 1}w_{i} &lt; u \right\}\]</span> .</p>
+<p>The Jacobian of the transformation Ui = T-1WiT’-1 is shown by Deemer and Olkin (1951) to be |T-1|p+1 . It follows that</p>
+<p><span class="math display">\[
+f_{U_{1},\ldots,U_{k - 1},U}\left( u_{1},\ldots,u \right) = \left( c_{p}\left( \Sigma \right) \right)^{k}\left| u \right|^{(k - 1)(p + 1)/2}\exp\left( - \frac{1}{2}\text{tru}\Sigma^{- 1} \right)
+\]</span></p>
+<p>over {0 &lt; ui, <span class="math display">\[\sum_{i = 1}^{k - 1}u_{i}\]</span> &lt; I, 0 &lt; u}. The transformation from the Ui to the Si has unit Jacobian and so</p>
+<p><span class="math display">\[
+f_{S_{1},\ldots,S_{k - 1},U}\left( s_{1},\ldots u \right) = \left( c_{p}\left( \Sigma \right) \right)^{k}\left| u \right|^{(k - 1)(p + 1)/2}\exp\left( - \frac{1}{2}\text{tru}\Sigma^{- 1} \right)
+\]</span></p>
+<p>over {0 &lt; s1 &lt; … &lt; sk-1 &lt; I, 0 &lt; u} . This density is seen to factor into the product of a constant and the W(S,k(p+1),p) density of U. We have thus demonstrated that U is independent of {S1, …, Sk-1} and that</p>
+<p><span class="math display">\[f_{S_{1},\ldots,S_{k - 1}}\left( s_{1},\ldots,s_{k - 1} \right) =
+\beta_{k,p}^{- 1}\]</span> for (s1, …, sk-1) ε Gk,p.</p>
+<p>The converse is shown by developing a Cauchy functional equation for matrix arguments.</p>
+<p>By assumption</p>
+<p><span class="math display">\[
+f_{S_{1},\ldots,S_{k - 1}|U} = f_{S_{1},\ldots,S_{k - 1}} = \beta_{k,p}^{- 1}
+\]</span></p>
+<p>over Gk,p and for all U &gt; 0. By construction</p>
+<p><span class="math display">\[
+f_{U_{1},\ldots,U_{k - 1},U}\left( u_{1},\ldots,u \right) = \left| u \right|^{- (k - 1)(p + 1)/2}f\left( u - \sum_{i = 1}^{k - 1}w_{i} \right)\prod_{i = 1}^{k - 1}{f\left( w_{i} \right)}
+\]</span></p>
+<p>where ui = si – si-1 (s0=0), wi = tuit’ and tt’ = u. Then a density h of U satisfies</p>
+<p><span class="math display">\[
+h = \frac{f_{S_{1},\ldots,S_{k - 1},U}}{f_{S_{1},\ldots,S_{k - 1}|U}}
+\]</span></p>
+<p>except possibly on a set of measure zero. Thus, for almost all (w1, …, wk-1,u)</p>
+<p>Equation 1:</p>
+<p><span class="math display">\[
+h\left( u \right) = \beta_{k,p}{|u|}^{- (k - 1)(p + 1)/2}f\left( u - \sum_{i =
+1}^{k - 1}w_{i} \right)\prod_{i = 1}^{k - 1}{f(w_{i})}.
+\]</span></p>
+<p>By the continuity assumption Equation 1 is satisfied at w1 = . . . = wk-1 = 0 for almost all u, which implies</p>
+<p><span class="math display">\[
+f\left( u - \sum_{i = 1}^{k - 1}w_{i} \right)\prod_{i = 1}^{k - 1}{f\left( w_{i} \right)} = f\left( u \right)f^{k - 1}\left( 0 \right)\text{      a.e.}
+\]</span></p>
+<p>Therefore, f(0) &gt; 0, Equivalently,</p>
+<p>Equation 2:</p>
+<p><span class="math display">\[
+\prod_{i = 1}^{k}{g\left( w_{i} \right)} = g\left( \sum_{i = 1}^{k}w_{i} \right)\text{a.e.}
+\]</span></p>
+<p>where <span class="math display">\[w_{k} = u - \sum_{i = 1}^{k - 1}w_{i}\]</span> and g = f-1(0)f.</p>
+<p>Equation 2 is a Cauchy functional equation for matrix arguments. In the present context g is a function of p(p+1)/2 (mathematically) independent variables, so that without loss of generality we may restrict consideration to upper triangular arguments. In particular, if Wr (1 ≤ r ≤ k) have all but the (i,j)-th element zero, Equation 2 is the usual Cauchy functional equation whose nontrivial solution is</p>
+<p>Equation 3:</p>
+<p><span class="math display">\[
+g\left( W_{r} \right) = exp\left( - \frac{1}{2}a_{\text{ji}}w_{\text{ij}}^{\left( r \right)} \right)\text{}
+\]</span></p>
+<p>With obvious notation, where aji is arbitrary.</p>
+<p>Moreover, every upper triangular matrix W may be written as the sum of p(p+1)/2 matrices each of which has at most one non-zero element. Applying Equation 3 once again to this representation, we conclude that the most general solution to Equation 2 is</p>
+<p><span class="math display">\[
+g\left( W \right) = \prod_{i = 1}^{p}{\prod_{j = 1}^{p}{\exp\left( - \frac{1}{2}a_{\text{ji}}w_{\text{ij}} \right)}}
+\]</span></p>
+<p>which allows g to be possibly non-trivial in each of its p(p+1)/2 arguments. In terms of symmetric matrices W,</p>
+<p><span class="math display">\[
+g\left( W \right) = exp\left( - \frac{1}{2}a_{\text{ji}}w_{\text{ij}} \right)
+\]</span></p>
+<p><span class="math display">\[
+= exp(- \frac{1}{2} tr WA)
+\]</span></p>
+<p>where A is a real, symmetric matrix.</p>
+<p>In order that f be a density proportional to g over the range 0 &lt; W, one must have</p>
+<p><span class="math display">\[
+\sum_{i,j}^{}{w_{\text{ij}}a_{\text{ji}} &gt; 0.}
+\]</span></p>
+<p>(Otherwise, there exists a set of W’s with infinite Lebesgue measure in p(p+1)/2-space with densities greater than unity.) More specifically, by choosing wij’s appropriately, it can be shown that A must be pd.</p>
+<p>We have just shown that W1 ~ W(A-1,p+1,p), which implies EW = (p+1)A-1, and therefore A = Σ-1, completing the proof.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
