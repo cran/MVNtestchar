@@ -1,3 +1,8 @@
+MVNtestchar 1.1.3
+=================
+
+-   Restored subscripts and superscripts to text of vignette
+
 MVNtestchar 1.1.2
 =================
 

@@ -21,14 +21,13 @@ characterization; that is, it is based on characteristics of the normal
 distribution that are unique to it among all (nondegenerate) multivariate
 distributions. The MVNtestchar package implements this test.
 
-Transformations and the Characterization
-========================================
+## Transformations and the Characterization
 
-Consider a set of p x 1 random vectors of full rank Xi, i = 1, . . ., 4(p+1).
-Let Yi = X2i -- X2i-1, i = 1, . . ., 2(p+1).
+Consider a set of p x 1 random vectors of full rank X~i~, i = 1, . . ., 4(p+1). Let Y~i~ = X~2i~ -- X~2i-1~, i = 1, . . ., 2(p+1).
 
-The Yi have a distribution that is centered at 0, so all of the odd moments of
-the Yi are zero regardless of the underlying distribution of the Xi. Now, define
+The Y~i~ have a distribution that is centered at 0. In fact, all of the odd moments of the Y~i~ are zero regardless of the underlying distribution of the X~i~. Now, define
+
+
 
 $$
 W_{1} = \sum_{i = 1}^{p + 1}{Y_{i}{Y'}_{i}}
@@ -36,25 +35,22 @@ $$
 
 and
 
-$$W_{2} = \sum_{i = p + 2}^{2(p + 1)}{Y_{i}{Y'}_{i}}$$,
+$$
+W_{2} = \sum_{i = p + 2}^{2(p + 1)}{Y_{i}{Y'}_{i}}
+$$,
 
-where Y'i is the transpose of Yi. The Wi are then independently distributed,
-symmetric matrices of rank p.
+where Y'~i~ is the transpose of Y~i~. The W~i~ are then independently distributed, symmetric matrices of rank p.
 
-Let T = W1 + W2 and let S = T-1/2 W1 T-1/2 . S is a positive definite
-(symmetric) matrix of rank p regardless of the underlying distribution of the
-Xi.
+Let T = W~1~ + W~2~ and let S = T^-1/2^ W~1~ T'^-1/2^ .  S is a positive definite (symmetric) matrix of rank p regardless of the underlying distribution of the X~i~.
 
-It is shown in the Appendix that S is distributed uniformly on its support
-region **if and only if** the Xi are multivariate normal. It is this
-characteristic that underlies the test.
+It is shown in the Appendix that S is distributed uniformly on its support region **if and only if** the X~i~ are multivariate normal. It is this characteristic that underlies the test.
 
-The support region for S
-------------------------
 
-The p x p symmetric matrix S is equivalent to a set of p(p+1)/2 random variables
-V1, V2, ... , Vp, V12, V13, .., V1p, ..., Vp-1,p. This is easily seen if we lay
-out the Vij in the matrix format, showing only the upper triangle:
+## The support region for S
+
+The p x p symmetric matrix S is equivalent to a set of p(p+1)/2 random variables V~1~, V~2~, ... , V~p~, V~12~, V~13~, .., V~1p~, ..., V~p-1,p~. This is easily seen if we lay out the V~i~ and the V~ij~ in the matrix format, showing only the upper triangle:
+
+
 
 $$
 \begin{matrix}
@@ -83,25 +79,25 @@ V_{3} & \cdots \\
 \end{matrix}
 $$
 
-V1 through Vp are the diagonal elements of the matrix and V12 ... Vp-1,p are the
-off-diagonal elements.
+V~1~ through V~p~ are the diagonal elements of the matrix and V~12~ ... V~p-1,p~ are the off-diagonal elements.
 
-By construction, the diagonal elements of S all lie in the interval
-$$\lbrack0,1\rbrack$$. Because S is positive definite, the off-diagonal elements
-all lie in the interval $$\lbrack-1,1\rbrack$$. The support region of S is
-within the hyper-rectangle $$R_{p} = {\lbrack 0,1\rbrack}^{p}{\lbrack -
-1,1\rbrack}^{m},$$ where m = p(p-1)/2.
+By construction, the diagonal elements of S all lie in the interval [0,1]. Because S is positive definite, the off-diagonal elements all lie in the interval [-1,1]. The support region of S is within the hyper-rectangle
 
-The support region is difficult to envision in higher dimensions. For p = 2, the
-matrix S has two diagonal elements and one off-diagonal element: V1, V2, and
-V12. The support region of S is, then, that part of the three-dimensional
-hyper-rectangle bounded by $$R_{2} = {\lbrack 0,1\rbrack}^{2} \lbrack
--1,1\rbrack$$ and that satisfies V1 V2 -- V122 \> 0.
+$$
+R_p = \lbrack 0,1 \rbrack ^p  \lbrack -1,1 \rbrack ^m
+$$ 
 
-By stepping \|V12\| up from 0 to 1.0, the following graph shows the support
-region (shaded) as a function of V1 and V2:
+where m = p(p-1)/2.
 
-```{r,echo=FALSE,out.width="100%"}
+
+The support region is difficult to envision in higher dimensions. For p = 2, the matrix S has two diagonal elements and one off-diagonal element: V~1~, V~2~, and V~12~. The support region of S is then that part of the 3-dimensional rectangle bounded by R~2~ = \[0,1] x \[0,1] x \[-1,1] that satisfies V~1~ V~2~ -- V~12~^2^ > 0. 
+
+By stepping |V~12~| up from 0 to 1.0, the following graph shows the support region (shaded) as a function of V~1~ and V~2~.
+
+
+
+
+```{r,echo=FALSE,out.width="90%"}
 pos.def.plot <- function(npoints, v12){
    nv12 <- length(v12)
    x <- rep(1:npoints,each=npoints) /npoints
@@ -119,94 +115,90 @@ pos.def.plot <- function(npoints, v12){
    vertlabel="V2"
    legendname=NULL
    cap=NULL
-   mtitle="Support for Multivariate Normality Test"
+   mtitle="Support for MVNchar Test"
    stitle="Positive Definite Region for p=2"
-     XVAR <- tempdf2[,1]
-     YVAR <- tempdf2[,2]
-     COV1 <- tempdf2[,5]
-     dfplot <- data.frame(XVAR,YVAR,COV1)
-     FACET <- tempdf2[,6]
-     dfplot <- data.frame(dfplot,FACET)
+	 XVAR <- tempdf2[,1]
+	 YVAR <- tempdf2[,2]
+	 COV1 <- tempdf2[,5]
+	 dfplot <- data.frame(XVAR,YVAR,COV1)
+	 FACET <- tempdf2[,6]
+	 dfplot <- data.frame(dfplot,FACET)
    out <- ggplot2::ggplot(data=dfplot,ggplot2::aes(XVAR,YVAR,COV1)) + ggplot2::geom_point()
-     out$labels$shape <- legendname
-     names(FACET)<-tempdf2$namesV12
-     out <- out + ggplot2::facet_wrap(~FACET)
+	 out$labels$shape <- legendname
+	 names(FACET)<-tempdf2$namesV12
+	 out <- out + ggplot2::facet_wrap(~FACET)
    out <- out + ggplot2::ggtitle(mtitle,subtitle=stitle) + ggplot2::xlab(horlabel) + ggplot2::ylab(vertlabel) +                                  ggplot2::labs(caption=cap,legend=legendname)
-     out <- out + ggplot2::labs(color=legendname)
-     print(out)
-```
+	 out <- out + ggplot2::labs(color=legendname)
+	 print(out)
+```  
 
-The package contains four functions that produce rotatable graphs depicting this
-hyper-rectangle and the positive definite region within it. The function
-*support.p2( )* shows the entire positive definite region. The functions
-*slice.v1( )* and *slice.v12( )* show slices through the region for fixed values
-of V1 and V12, respectively. Finally, *maxv12( )* shows the maximum value of V12
-as a function of V1 and V2.
 
-The latest values of the rotational parameters are output in list format upon
-exit from the graphics functions to facilitate return to that rotation, if
-desired. To capture these, assign the function to a new variable.
+The package contains four functions that produce rotatable 3-dimensional graphs depicting this hyper-rectangle and the positive definite region within it. The function *support.p2( )* shows the entire positive definite region. The functions *slice.v1( )* and *slice.v12( )* show slices through the region for fixed values of V~1~ and V~12~, respectively. Finally, *maxv12( )* shows the maximum value of V~12~ as a function of V~1~ and V~2~.
 
-Implementing the Test
-=====================
+The latest values of the rotational parameters are output in list format upon exit from the graphics functions to facilitate return to that rotation, if desired. To capture these, assign the function to a new variable.
+
+# Implementing the Test
+
 
 The function *testunknown(x, pvector, k)* implements the test of multivariate
-normality of the n x p matrix, x. x can be either a matrix or an array. The
-input parameters will be discussed more fully in the next paragraphs.
+normality of the n x p matrix, x. The input parameters will be discussed more 
+fully in the next paragraphs.
 
 The matrix x is assumed to be a sample of n observations on the unknown
 p-variate distribution. Here, n = 4r(p+1) for r a positive integer. The
 transformations involve exact numbers of random variables, and *testunknown( )*
 will discard observations at random to ensure that this condition holds.
 
-*testunknown( )* divides the sample into r groups of 4(p+1) observations and
+
+S~1~, ..., S~r~ are distributed uniformly on the positive definite subspace of the hyper-rectangle
+
+$$
+R_p~ = \lbrack 0,1 \rbrack ^p \lbrack -1,1 \rbrack ^m 
+$$ 
+
+
+if and only if x is a sample from a multivariate normal distribution. 
+
+*testunknown( )* performs a chisquare goodness of fit test by filling this hyper-rectangle with mini-cubes and counting and comparing the number of S~i~ in each mini-cube. As implied, the mini-cubes are hyper-cubical (equal length in every dimension).
+
+The input variable pvector is essentially a check to ensure that the matrix is oriented properly; it should equal the value of p taken from x within the function. If this test fails, the function aborts. 
+
+The parameter k defines the number of cuts to be made on each edge of the hyper-rectangle. The mini-cubes will then be of length 1/k on each edge. There are p(p+1)/2 terms in this set. 
+
+It is possible to undertake various research projects with this test function, and an array with mobs=b layers is allowed in order to facilitate this possibility. We have in mind simulations with mobs repetitions. If x is an array with b layers, x should have dimension n x p x b.
+
+## Relating Sample Size to the Size of Mini-cubes
+
+*testunknown( )* divides the sample into r sets of 4(p+1) observations and
 performs the transformations described above on each of the r sets
 independently. This results in positive definite matrices S1, ..., Sr
 distributed independently as described above regardless of the distribution of
-the Xi.
+the X~i~.
 
-S1, ..., Sr are distributed uniformly on the positive definite subspace of the
-hyper-rectangle $$R_{p} = {\lbrack 0,1\rbrack}^{p}{\lbrack - 1,1\rbrack}^{m}$$
-if and only if x is a sample from a multivariate normal distribution.
-*testunknown( )* performs a chisquare goodness of fit test by filling this
-hyper-rectangle with mini-cubes and counting the number of Si in each mini-cube.
-As implied, the mini-cubes are hyper-cubical (equal length in every dimension).
-
-The input variable pvector is essentially a check to ensure that the matrix is
-oriented properly; it should equal the value of p taken from x directly. If this
-test fails, the function aborts. The parameter k defines the number of cuts to
-be made on each edge of the hyper-rectangle. The mini-cubes will then be of size
-1/k x 1/k x ... x 1/k. There are p(p+1)/2 terms in this set.
-
-It is possible to undertake various research projects with this test function,
-and an array with mobs = b layers is allowed in order to facilitate this
-possibility. We have in mind simulations with b repetitions. If x is an array
-with b layers, x should have dimension n x p x b.
-
-Relating Sample Size to the Size of Mini-cubes
-----------------------------------------------
+S~1~, ..., S~r~ are distributed uniformly on the positive definite subspace of the
+hyper-rectangle $R_p = \lbrack 0,1 \rbrack ^p \lbrack - 1,1 \rbrack^m$ if and only if x is a sample from a multivariate normal distribution.
 
 Any goodness of fit test, univariate or multivariate, must consider the
 relationship of the sample size to the number of "bins" into which the support
 is subdivided. The sample size is always finite and the samples are continuous,
-so that creating too many bins will always result in exactly 1 observation per
+so that creating too many bins will always result in exactly one observation per
 occupied bin. With too many bins, there can be no distinction between null and
 alternative distributions.
 
 In our case, the number of mini-cubes ("bins") into which the hyper-cube is
-divided is N(k,p) = kp(2k)m,where m = p(p-1)/2. For p = 2, m = 1 and N(k,p) =
-2k3. Similarly, N(k,3) = 8k6 and N(k,4) = 64k10 . Mini-cubes are entirely,
+divided is N(k,p) = k^p^(2k)^m^,where m = p(p-1)/2. For p = 2, m = 1 and N(k,p) =
+2k^3^. Similarly, N(k,3) = 8k^6^ and N(k,4) = 64k^10^ . Mini-cubes are entirely,
 partially, or not at all within the positive definite region of the
 hyper-rectangle. We can calculate analytically the fraction of the
 hyper-rectangle that is within the positive definite region only for p = 2. This
 fraction is 4/9. For p \> 2, the calculation appears to be intractable.
 
 The number of mini-cubes clearly grows rapidly with the dimension of the sample.
-However, the support of the Si is only a subset of the hyper-rectangle, namely
+However, the support of the S~i~ is only a subset of the hyper-rectangle, namely
 the positive definite region. The following table shows the number of mini-cubes
 in the hyper-rectangle, N(k,p), the ratio of the positive definite region to the
 overall volume of the hyper-rectangle, and the approximate number of mini-cubes
-in the positive definite region, as a function of k and p ≤ 4.
+in the positive definite region, for several values of k and p.
 
 **Table 1. The number of mini-cubes, N(k,p) in the hyper-rectangle, as a
 function of the number of cuts, k and the dimensionality, p of the sample, and
@@ -218,7 +210,6 @@ the number that represent positive definite matrices.**
      - ------ ----- -------    - ------- ----- -------      - -------- ----- -------  
      k N(k,p) ratio pos def    k  N(k,p) ratio pos def      k  N(k,p)  ratio pos def   
                (%)                        (%)                           (%)     
-
      2     16  44.4       7    2     512  14.8      76      2    65536   0.6     344    
      5    250  44.4     111    5  125000   7.2    8948      3    3.7e6   0.5   20410    
     10   2000  44.4     889    6  373248   7.8   29213      4    6.7e7   0.5  335544
@@ -239,15 +230,15 @@ For each value of p the ratio of mini-cubes in the positive definite region to
 the overall number in the hyper-rectangle is fairly constant. For p \> 2, this
 ratio is a very small part of the overall volume of the hyper-rectangle.
 Nevertheless, Table 1 shows that a very large number of "bins" in the support
-region will result if k is set too large.
+region will result if k is set too high.
 
 In performing the characterization transformations, the number of vector samples
 is substantially reduced to form the positive definite matrices that are tested
 for uniformity of distribution. Table 1 refers to the number of bins into which
-the matrices Si will fall. 4(p+1) vectors Xi will result in a single matrix Si.
+the matrices S~i~ will fall. 4(p+1) vectors X~i~ will result in a single matrix S~i~.
 This multiplier is 12 for p = 2, is 16 for p = 3, and is 20 for p = 4. Assuming
-that the expected number of Si in each bin should be 3 or 5, Table 2 gives the
-number of Xi that should be in the sample for each value of k.
+that the expected number of S~i~ in each bin should be about E, Table 2 gives the
+number of X~i~ that should be in the sample for each value of k.
 
 **Table 2. Relationship of sample size n to number of cuts k, as a function of
 the expected number E of positive definite matrices Si per mini-cube.**
@@ -273,7 +264,7 @@ the expected number E of positive definite matrices Si per mini-cube.**
 
 From Table 2, we conclude that if we wish to test a trivariate sample for
 normality, and we have about 720,000 observations, we should set k to be no more
-than 5 to ensure that there are about 5 observations per mini-cube.
+than 5 to ensure that there are about E=5 observations per mini-cube.
 
 Example Databases Included in MVNtestchar Package
 =================================================
@@ -334,7 +325,7 @@ As usual, "independent and identially distributed" will be abbreviated as iid;
 "positive definite" as pd ; "is distributed as" by the symbol \~ ; and "is
 proportional to" by the symbol $\propto$.
 
-We write A \< B if A and B are symmetric matrices and B -- A is positive
+We write A < B if A and B are symmetric matrices and B -- A is positive
 definite.
 
 Define the functions
@@ -355,7 +346,7 @@ $$
 \beta_{k,p} = \beta_{k,p}^{*}(\frac{1}{2}\left( p + 1 \right),\ \ldots,\frac{1}{2}(p + 1))
 $$
 
-for $\lambda$ and the aj \> (p-1)/2.
+for $\lambda$ and the a~j~ \> (p-1)/2.
 
 For S p.d., define
 
@@ -368,18 +359,18 @@ c_{p}\left( \Sigma \right) = c_{p}^{*}(p + 1,\Sigma).
 $$
 
 The p-variate Normal distribution function with mean μ and covariance matrix Σ
-will be denoted by Np(μ,Σ). The Wishart distribution with parameters Σ, n, and p
+will be denoted by N~p~(μ,Σ). The Wishart distribution with parameters Σ, n, and p
 will be denoted by W(Σ,n,p). If n ≥ p, a matrix variable S \~ W(Σ,n,p) has the
 density
 
 $$
-c_{p}^{*}\left( n,\Sigma \right){|S|}^{(n - p - 1)/2}exp( - \frac{1}{2}\text{trS}\Sigma^{- 1}), 0 \< S.
+c_{p}^{*}\left( n,\Sigma \right){|S|}^{(n - p - 1)/2}exp( - \frac{1}{2}\text{trS}\Sigma^{- 1}), 0 < S.
 $$
 
 We say that T is a matrix square root of U if TT' = U. No further specification
 of T will be needed here.
 
-The distance d(A,B) between symmetric p x p matrices A = ((aij)) and B = ((bij))
+The distance d(A,B) between symmetric p x p matrices A = ((a~ij~)) and B = ((b~ij~))
 is defined to be
 
 $$
@@ -394,15 +385,15 @@ right continuous at every A.
 
 Define the set of functions
 
-Vp = {f: f defined on symmetric p x p matrices, f continuous at each A \> 0 and
+V~p~ = {f: f defined on symmetric p x p matrices, f continuous at each A \> 0 and
 right continuous at 0}.
 
-Gk,p = {Si: Si is a p x p real, symmetric matrix, 0 \< S1 \< S2 \< ... \< Sk-1
+G~k,p~ = {S~i~: S~i~ is a p x p real, symmetric matrix, 0 \< S~1~ \< S~2~ \< ... \< S~k-1~
 \< I}
 
 ### Theorem 1.
 
-Let Zi (1 ≤ i ≤ 2mk) be iid p-variate random vectors with mean μ and pd
+Let Z~i~ (1 ≤ i ≤ 2mk) be iid p-variate random vectors with mean μ and pd
 covariance matrix Σ . Define
 
 $$X_{i} = (Z_{2i-1} - Z_{2i})/ \sqrt{2}$$ for (1 ≤ i ≤ mk) and
@@ -410,32 +401,30 @@ $$X_{i} = (Z_{2i-1} - Z_{2i})/ \sqrt{2}$$ for (1 ≤ i ≤ mk) and
 $$W_{j} = \sum_{i = \left( j - 1 \right)m + 1}^{\text{jm}}{X_{i}{X'}_{i}}$$ for
 (1 ≤ j ≤ k).
 
-Then the Xi are iid Np(0,Σ) and the Wj are iid W(Σ,m,p) if and only if the Zi \~
-Np(μ,Σ).
+Then the X~i~ are iid N~p~(0,Σ) and the W~j~ are iid W(Σ,m,p) if and only if the Z~i~ \~
+N~p~(μ,Σ).
 
 ### Proof.
 
-The Xi are iid by construction; similarly, for the Wj. The stated moments of the
-Xi also follow irrespective of the distribution of the Zi.
+The X~i~ are iid by construction; similarly, for the W~j~. The stated moments of the
+X~i~ also follow regardless of the distribution of the Z~i~.
 
 Sufficiency follows from the usual development of the Wishart distribution as
-given, for example, in Anderson (1958, Ch.7). We note that Wj does not
+given, for example, in Anderson (1958, Ch.7). We note that W~j~ does not
 necesarily have a density (i.e., may be degenerate) because the parameter m is
-not required here to be at least equal to p. The characteristic function of Wj
+not required here to be at least equal to p. The characteristic function of W~j~
 does exist, however, in all cases.
 
 To show that the condition is also necessary define B to be a non-singular
-matrix such that for θ real symmetric B'θB = D diagonal and also  
-B'S-1B = I. (Such a matrix exists; see Anderson (1958, p.34).) Then B-1SB'-1 =
-I.
+matrix such that for θ real symmetric B'θB = D diagonal and also B'S^-1^B = I. (Such a matrix exists; see Anderson (1958, p.34).) Then B^-1^SB'^-1^ = I.
 
-Let Y = B-1X1. The characteristic function of W1 for θ real symmetric is
+Let Y = B^-1^X~1~. The characteristic function of W~1~ for θ real symmetric is
 
 $$
 \psi_{W_{1}}\left( \theta \right) = \psi_{\sum_{i = 1}^{m}{X_{i}{X'}_{i}}}\left( \theta \right) = \left\lbrack \psi_{X_{i}{X'}_{i}}\left( \theta \right) \right\rbrack^{m}
 $$
 
-because the Xi are iid. Now,
+because the X~i~ are iid. Now,
 
 $$
 \psi_{X_{i}{X'}_{i}}\left( \theta \right) = \psi_{BYY'B'}\left( \theta \right)
@@ -454,22 +443,22 @@ $$
 $$
 
 $$
-= E\ exp\left( \text{i\ }\sum_{j = 1}^{p}{d_{\text{jj}}Y_{j}^{2}} \right)
+= E\ exp\left( \text{i}\sum_{j = 1}^{p}{d_{\text{jj}}Y_{j}^{2}} \right)
 $$
 
 $$
 = \psi_{S}\left( d \right)
 $$
 
-This last term is the characteristic function of the vector S' =(Y12, ..., Yp2),
-where d' = (d11,..., dpp) because d may be any vector with real elements by
+This last term is the characteristic function of the vector S' = (Y~1~^2^, ..., Y~p~^2^),
+where d' = (d~11~,..., d~pp~) because d may be any vector with real elements by
 choosing θ appropriately. It follows that
 
 $$
 \psi_{W_{1}}\left( \theta \right) = \left\lbrack \psi_{S}(d) \right\rbrack^{m}
 $$
 
-By assumption W1 \~ W(Σ,m,p); then for θ real symmetric (Anderson (1958,
+By assumption W~1~ \~ W(Σ,m,p); then for θ real symmetric (Anderson (1958,
 p.160)),
 
 $$
@@ -488,28 +477,37 @@ $$
 = \left( \prod_{j = 1}^{p}\left( 1 - 2id_{\text{jj}} \right)^{- 1/2} \right)^{m}
 $$
 
-This shows the components Yj2 of S to be iid chi-square with 1 df. Write the
-j-th row of B-1 as bj-1; then Yj = bj-1X1. Because X1 has marginal symmetry
-about 0, Yj is symmetrically distributed about 0 (1 ≤ j ≤ p). By Lemma 3 of
-Csörgö and Seshadri (1971), Yj \~ N1(0,1). Thus, Y \~ Np(0,I) and X1 = BY \~
-Np(0,BB'), or X1 \~ Np(0,S). The result follows by applying Cramér's Theorem
-(Cramér, 1962, p. 112-113)) and the identity of distribution of the Zi.
+This shows the components Y~j~^2^ of S to be iid chi-square with 1 df. Write the
+j-th row of B^-1^ as b~j~^-1^; 
+
+then Y~j~ = b~j~^-1^X~1~. Because X~1~ has marginal symmetry
+about 0, Y~j~ is symmetrically distributed about 0 (1 ≤ j ≤ p). By Lemma 3 of
+Csörgö and Seshadri (1971), Y~j~ \~ N~1~(0,1). Thus, Y \~ N~p~(0,I) and X~1~ = BY \~
+N~p~(0,BB'), or X~1~ \~ N~p~(0,S). The result follows by applying Cramér's Theorem
+(Cramér, 1962, p. 112-113)) and the identity of distribution of the Z~i~.
 
 ### Theorem 2.
 
-Let Wi (1 ≤ i ≤ k) be iid p x p pd random matrices with density f ε Vp. Define
-$$U = \ \sum_{i = 1}^{p}W_{i}$$
+Let W~i~ (1 ≤ i ≤ k) be iid p x p pd random matrices with density f ε V~p~. Define
+$$
+U = \ \sum_{i = 1}^{p}W_{i}
+$$
 
-and let T be any matrix square root of U. Define Ui = T-1WiT'-1 and $$S_{i} =
-\sum_{j = 1}^{p}U_{j}$$ (1 ≤ i ≤ k-1). Then (S1, ..., Sk-1) is uniform over Gk,p
-and independent of U if and only if the Wi \~ W(Σ,p+1,p) for some Σ .
+and let T be any matrix square root of U. Define U~i~ = T^-1^W~i~T'^-1^ and 
+
+$$
+S_i = \sum_{j = 1}^{p}U_{j}
+$$
+
+ for (1 ≤ i ≤ k-1). Then (S~1~, ..., S~k-1~) is uniform over G~k,p~
+and independent of U if and only if the W~i~ \~ W(Σ,p+1,p) for some Σ .
 
 ### Proof.
 
-Let Wi \~ W(Σ,p+1,p) (1 ≤ i ≤ k), so that
+Let W~i~ \~ W(Σ,p+1,p) (1 ≤ i ≤ k), so that
 
 $$f\left( w_{i} \right) = c_{p}\left( \Sigma \right)\exp\left( -
-\frac{1}{2}\text{tr}w_{i}\Sigma^{- 1} \right)$$ for 0 \< wi .
+\frac{1}{2}\text{tr}w_{i}\Sigma^{- 1} \right)$$ for 0 \< w~i~ .
 
 Then because the Jacobian is unity,
 
@@ -519,26 +517,26 @@ $$
 
 over $$\left\{ 0 < w_{i},\sum_{i = 1}^{k - 1}w_{i} < u \right\}$$ .
 
-The Jacobian of the transformation Ui = T-1WiT'-1 is shown by Deemer and Olkin
-(1951) to be \|T-1\|p+1 . It follows that
+The Jacobian of the transformation U~i~ = T^-1^W~i~T'^-1^ is shown by Deemer and Olkin
+(1951) to be \|T^-1^\|^p+1^ . It follows that
 
 $$
 f_{U_{1},\ldots,U_{k - 1},U}\left( u_{1},\ldots,u \right) = \left( c_{p}\left( \Sigma \right) \right)^{k}\left| u \right|^{(k - 1)(p + 1)/2}\exp\left( - \frac{1}{2}\text{tru}\Sigma^{- 1} \right)
 $$
 
-over {0 \< ui, $$\sum_{i = 1}^{k - 1}u_{i}$$ \< I, 0 \< u}. The transformation
-from the Ui to the Si has unit Jacobian and so
+over {0 \< u~i~, $\sum_{i = 1}^{k - 1}u_{i}$ \< I, 0 \< u}. The transformation
+from the U~i~ to the S~i~ has unit Jacobian and so
 
 $$
 f_{S_{1},\ldots,S_{k - 1},U}\left( s_{1},\ldots u \right) = \left( c_{p}\left( \Sigma \right) \right)^{k}\left| u \right|^{(k - 1)(p + 1)/2}\exp\left( - \frac{1}{2}\text{tru}\Sigma^{- 1} \right)
 $$
 
-over {0 \< s1 \< ... \< sk-1 \< I, 0 \< u} . This density is seen to factor into
+over {0 \< s~1~ \< ... \< s~k-1~ \< I, 0 \< u} . This density is seen to factor into
 the product of a constant and the W(S,k(p+1),p) density of U. We have thus
-demonstrated that U is independent of {S1, ..., Sk-1} and that
+demonstrated that U is independent of {S~1~, ..., S~k-1~} and that
 
 $$f_{S_{1},\ldots,S_{k - 1}}\left( s_{1},\ldots,s_{k - 1} \right) =
-\beta_{k,p}^{- 1}$$ for (s1, ..., sk-1) ε Gk,p.
+\beta_{k,p}^{- 1}$$ for (s~1~, ..., s~k-1~) ε G~k,p~.
 
 The converse is shown by developing a Cauchy functional equation for matrix
 arguments.
@@ -549,29 +547,29 @@ $$
 f_{S_{1},\ldots,S_{k - 1}|U} = f_{S_{1},\ldots,S_{k - 1}} = \beta_{k,p}^{- 1}
 $$
 
-over Gk,p and for all U \> 0. By construction
+over G~k,p~ and for all U \> 0. By construction
 
 $$
 f_{U_{1},\ldots,U_{k - 1},U}\left( u_{1},\ldots,u \right) = \left| u \right|^{- (k - 1)(p + 1)/2}f\left( u - \sum_{i = 1}^{k - 1}w_{i} \right)\prod_{i = 1}^{k - 1}{f\left( w_{i} \right)}
 $$
 
-where ui = si -- si-1 (s0=0), wi = tuit' and tt' = u. Then a density h of U
+where u~i~ = s~i~ -- s~i-1~ (s~0~=0), w~i~ = tu~i~t' and tt' = u. Then a density h of U
 satisfies
 
 $$
 h = \frac{f_{S_{1},\ldots,S_{k - 1},U}}{f_{S_{1},\ldots,S_{k - 1}|U}}
 $$
 
-except possibly on a set of measure zero. Thus, for almost all (w1, ..., wk-1,u)
+except possibly on a set of measure zero. Thus, for almost all (w~1~, ..., w~k-1~,u)
 
-Equation 1:
+----Equation 1----:
 
 $$
 h\left( u \right) = \beta_{k,p}{|u|}^{- (k - 1)(p + 1)/2}f\left( u - \sum_{i =
 1}^{k - 1}w_{i} \right)\prod_{i = 1}^{k - 1}{f(w_{i})}.
 $$
 
-By the continuity assumption Equation 1 is satisfied at w1 = . . . = wk-1 = 0
+By the continuity assumption Equation 1 is satisfied at w~1~ = . . . = w~k-1~ = 0
 for almost all u, which implies
 
 $$
@@ -580,28 +578,28 @@ $$
 
 Therefore, f(0) \> 0, Equivalently,
 
-Equation 2:
+----Equation 2----:
 
 $$
 \prod_{i = 1}^{k}{g\left( w_{i} \right)} = g\left( \sum_{i = 1}^{k}w_{i} \right)\text{a.e.}
 $$
 
-where $$w_{k} = u - \sum_{i = 1}^{k - 1}w_{i}$$ and g = f-1(0)f.
+where $$w_{k} = u - \sum_{i = 1}^{k - 1}w_{i}$$ and g = f^-1^(0)f.
 
 Equation 2 is a Cauchy functional equation for matrix arguments. In the present
 context g is a function of p(p+1)/2 (mathematically) independent variables, so
 that without loss of generality we may restrict consideration to upper
-triangular arguments. In particular, if Wr (1 ≤ r ≤ k) have all but the (i,j)-th
+triangular arguments. In particular, if W~r~ (1 ≤ r ≤ k) have all but the (i,j)-th
 element zero, Equation 2 is the usual Cauchy functional equation whose
 nontrivial solution is
 
-Equation 3:
+----Equation 3----:
 
 $$
 g\left( W_{r} \right) = exp\left( - \frac{1}{2}a_{\text{ji}}w_{\text{ij}}^{\left( r \right)} \right)\text{}
 $$
 
-With obvious notation, where aji is arbitrary.
+With obvious notation, where a~ji~ is arbitrary.
 
 Moreover, every upper triangular matrix W may be written as the sum of p(p+1)/2
 matrices each of which has at most one non-zero element. Applying Equation 3
@@ -634,7 +632,7 @@ $$
 
 (Otherwise, there exists a set of W's with infinite Lebesgue measure in
 p(p+1)/2-space with densities greater than unity.) More specifically, by
-choosing wij's appropriately, it can be shown that A must be pd.
+choosing w~ij~'s appropriately, it can be shown that A must be pd.
 
-We have just shown that W1 \~ W(A-1,p+1,p), which implies EW = (p+1)A-1, and
-therefore A = Σ-1, completing the proof.
+We have just shown that W~1~ \~ W(A^-1^,p+1,p), which implies EW = (p+1)A^-1^, and
+therefore A = Σ^-1^, completing the proof.

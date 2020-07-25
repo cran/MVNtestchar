@@ -1,4 +1,4 @@
-## ----echo=FALSE,out.width="100%"----------------------------------------------
+## ----echo=FALSE,out.width="90%"-----------------------------------------------
 pos.def.plot <- function(npoints, v12){
    nv12 <- length(v12)
    x <- rep(1:npoints,each=npoints) /npoints
@@ -16,21 +16,21 @@ pos.def.plot <- function(npoints, v12){
    vertlabel="V2"
    legendname=NULL
    cap=NULL
-   mtitle="Support for Multivariate Normality Test"
+   mtitle="Support for MVNchar Test"
    stitle="Positive Definite Region for p=2"
-     XVAR <- tempdf2[,1]
-     YVAR <- tempdf2[,2]
-     COV1 <- tempdf2[,5]
-     dfplot <- data.frame(XVAR,YVAR,COV1)
-     FACET <- tempdf2[,6]
-     dfplot <- data.frame(dfplot,FACET)
+	 XVAR <- tempdf2[,1]
+	 YVAR <- tempdf2[,2]
+	 COV1 <- tempdf2[,5]
+	 dfplot <- data.frame(XVAR,YVAR,COV1)
+	 FACET <- tempdf2[,6]
+	 dfplot <- data.frame(dfplot,FACET)
    out <- ggplot2::ggplot(data=dfplot,ggplot2::aes(XVAR,YVAR,COV1)) + ggplot2::geom_point()
-     out$labels$shape <- legendname
-     names(FACET)<-tempdf2$namesV12
-     out <- out + ggplot2::facet_wrap(~FACET)
+	 out$labels$shape <- legendname
+	 names(FACET)<-tempdf2$namesV12
+	 out <- out + ggplot2::facet_wrap(~FACET)
    out <- out + ggplot2::ggtitle(mtitle,subtitle=stitle) + ggplot2::xlab(horlabel) + ggplot2::ylab(vertlabel) +                                  ggplot2::labs(caption=cap,legend=legendname)
-     out <- out + ggplot2::labs(color=legendname)
-     print(out)
+	 out <- out + ggplot2::labs(color=legendname)
+	 print(out)
 
 ## ----echo=FALSE---------------------------------------------------------------
     a <- c(2,5,10,15,20,256,4000,31997,107989,255974,427,6666,53328,179982,426624)
